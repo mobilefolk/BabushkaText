@@ -1,7 +1,7 @@
-BabushkaText
+RichTextView
 ============
 
-BabushkaText is a custom `TextView` which lets you customize the styling of parts of your text via
+RichTextView is a custom `TextView` which lets you customize the styling of parts of your text via
 `Spannables`, but without the hassle of having to deal directly with Spannable themselves.
 
  * Create complex style structures for your text without having to add multiple `TextViews` to your
@@ -24,21 +24,21 @@ Generate the following style:
 With the code below:
 
 ```java
-        BabushkaText babushka = (BabushkaText)findViewById(R.id.babushka_text);
+        RichTextView richTextView = (RichTextView)findViewById(R.id.babushka_text);
 
         // Add the first piece "Central Park"
-        babushka.addPiece(new BabushkaText.Piece.Builder("Central Park, NY\n")
+        babushka.addPiece(new RichTextView.Piece.Builder("Central Park, NY\n")
                 .textColor(Color.parseColor("#414141"))
                 .build());
 
         // Add the second piece "1.2 mi"
-        babushka.addPiece(new BabushkaText.Piece.Builder("1.2 mi ")
+        babushka.addPiece(new RichTextView.Piece.Builder("1.2 mi ")
                 .textColor(Color.parseColor("#0081E2"))
                 .textSizeRelative(0.9f)
                 .build());
 
         // Add the third piece "from here"
-        babushka.addPiece(new BabushkaText.Piece.Builder("from here")
+        babushka.addPiece(new RichTextView.Piece.Builder("from here")
                 .textColor(Color.parseColor("#969696"))
                 .textSizeRelative(0.9f)
                 .build());
@@ -52,7 +52,7 @@ What kind of styles can I add?
 Right now you can customize the style of your text by using the following methods, which internally
 get converted to the corresponding `Spannables`
 
-| Babushka Method        | Internal Span           |
+| RichTextView Method        | Internal Span           |
 | ------------- |:-------------:|
 | textSize      | AbsoluteSizeSpan |
 | textColor      | ForegroundColorSpan      |
@@ -85,7 +85,7 @@ Download
 --------
 BabushkaText is a single Java file, so you can simply download it and reference it in your project.
 
-Download `BabushkaText.java` here:  **[BabushkaText](https://github.com/quiqueqs/BabushkaText/blob/master/babushkatext/src/main/java/babushkatext/BabushkaText.java)**
+Download `BabushkaText.java` here:  **[RichTextView](https://github.com/quiqueqs/BabushkaText/blob/master/babushkatext/src/main/java/babushkatext/BabushkaText.java)**
 
 Or if you prefer, you can simply download **[the JAR](https://github.com/quiqueqs/BabushkaText/tree/master/downloads/babushka-0.1.jar)**
 

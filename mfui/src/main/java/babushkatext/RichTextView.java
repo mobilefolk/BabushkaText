@@ -38,172 +38,172 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BabushkaText is a TextView which lets you customize the styling of parts of your text via
+ * RichTextView is a TextView which lets you customize the styling of parts of your text via
  * Spannables, but without the hassle of having to deal directly with Spannable themselves.
  *
- * The idea behind a BabushkaText is that it is made up of {@code Piece}s. Each Piece represents a
- * section of the final text displayed by this TextView, and each Piece may be styled independently
+ * The idea behind a BabushkaText is that it is made up of {@code SpanStyle}s. Each SpanStyle represents a
+ * section of the final text displayed by this TextView, and each SpanStyle may be styled independently
  * from the other Pieces. When you put it all together, the final results is still a a single
  * TextView, but with a a very different graphic output.
  *
  */
-public class BabushkaText extends TextView {
+public class RichTextView extends TextView {
 
     // some default params
     private static int DEFAULT_ABSOLUTE_TEXT_SIZE;
     private static float DEFAULT_RELATIVE_TEXT_SIZE = 1;
 
-    private List<Piece> mPieces;
+    private List<SpanStyle> mSpanStyles;
 
     /**
      * Create a new instance of a this class
      * @param context
      */
-    public BabushkaText(Context context) {
+    public RichTextView(Context context) {
         super(context);
         init();
     }
 
-    public BabushkaText(Context context, AttributeSet attrs) {
+    public RichTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public BabushkaText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RichTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        mPieces = new ArrayList<>();
-        BabushkaText.DEFAULT_ABSOLUTE_TEXT_SIZE = (int) getTextSize();
+        mSpanStyles = new ArrayList<>();
+        RichTextView.DEFAULT_ABSOLUTE_TEXT_SIZE = (int) getTextSize();
     }
 
     /**
-     * Use this method to add a {@link babushkatext.BabushkaText.Piece} to a BabushkaText.
-     * Each {@link babushkatext.BabushkaText.Piece } is added sequentially, so the
+     * Use this method to add a {@link SpanStyle} to a BabushkaText.
+     * Each {@link SpanStyle } is added sequentially, so the
      * order you call this method matters.
      *
-     * @param aPiece the Piece
+     * @param aSpanStyle the SpanStyle
      */
-    public void addPiece(Piece aPiece) {
-        mPieces.add(aPiece);
+    public void addPiece(SpanStyle aSpanStyle) {
+        mSpanStyles.add(aSpanStyle);
     }
 
     /**
-     * Adds a Piece at this specific location. The underlying data structure is a
+     * Adds a SpanStyle at this specific location. The underlying data structure is a
      * {@link java.util.List}, so expect the same type of behaviour.
      *
-     * @param aPiece the Piece to add.
+     * @param aSpanStyle the SpanStyle to add.
      * @param location the index at which to add.
      */
-    public void addPiece(Piece aPiece, int location) {
-        mPieces.add(location, aPiece);
+    public void addPiece(SpanStyle aSpanStyle, int location) {
+        mSpanStyles.add(location, aSpanStyle);
     }
 
     /**
-     * Replaces the Piece at the specified location with this new Piece. The underlying data
+     * Replaces the SpanStyle at the specified location with this new SpanStyle. The underlying data
      * structure is a {@link java.util.List}, so expect the same type of behaviour.
      *
-     * @param newPiece the Piece to insert.
+     * @param newSpanStyle the SpanStyle to insert.
      * @param location the index at which to insert.
      */
-    public void replacePieceAt(int location, Piece newPiece) {
-        mPieces.set(location, newPiece);
+    public void replacePieceAt(int location, SpanStyle newSpanStyle) {
+        mSpanStyles.set(location, newSpanStyle);
     }
 
     /**
-     * Removes the Piece at this specified location. The underlying data structure is a
+     * Removes the SpanStyle at this specified location. The underlying data structure is a
      * {@link java.util.List}, so expect the same type of behaviour.
      *
-     * @param location the index of the Piece to remove
+     * @param location the index of the SpanStyle to remove
      */
     public void removePiece(int location) {
-        mPieces.remove(location);
+        mSpanStyles.remove(location);
     }
 
     /**
-     * Get a specific {@link babushkatext.BabushkaText.Piece} in position index.
+     * Get a specific {@link SpanStyle} in position index.
      *
-     * @param location position of Piece (0 based)
-     * @return Piece o null if invalid index
+     * @param location position of SpanStyle (0 based)
+     * @return SpanStyle o null if invalid index
      */
-    public Piece getPiece(int location) {
-        if(location >= 0 && location < mPieces.size()) {
-            return mPieces.get(location);
+    public SpanStyle getPiece(int location) {
+        if(location >= 0 && location < mSpanStyles.size()) {
+            return mSpanStyles.get(location);
         }
 
         return null;
     }
 
     /**
-     * Call this method when you're done adding {@link babushkatext.BabushkaText.Piece}s
+     * Call this method when you're done adding {@link SpanStyle}s
      * and want this TextView to display the final, styled version of it's String contents.
      *
-     * You MUST also call this method whenever you make a modification to the text of a Piece that
+     * You MUST also call this method whenever you make a modification to the text of a SpanStyle that
      * has already been displayed.
      */
     public void display() {
 
         // generate the final string based on the pieces
         StringBuilder builder = new StringBuilder();
-        for(Piece aPiece : mPieces) {
-            builder.append(aPiece.text);
+        for(SpanStyle aSpanStyle : mSpanStyles) {
+            builder.append(aSpanStyle.text);
         }
 
         // apply spans
         int cursor = 0;
         SpannableString finalString = new SpannableString(builder.toString());
-        for(Piece aPiece : mPieces) {
-            applySpannablesTo(aPiece, finalString, cursor, cursor + aPiece.text.length());
-            cursor += aPiece.text.length();
+        for(SpanStyle aSpanStyle : mSpanStyles) {
+            applySpannablesTo(aSpanStyle, finalString, cursor, cursor + aSpanStyle.text.length());
+            cursor += aSpanStyle.text.length();
         }
 
         // set the styled text
         setText(finalString);
     }
 
-    private void applySpannablesTo(Piece aPiece, SpannableString finalString, int start, int end) {
+    private void applySpannablesTo(SpanStyle aSpanStyle, SpannableString finalString, int start, int end) {
 
-        if(aPiece.subscript) {
+        if(aSpanStyle.subscript) {
             finalString.setSpan(new SubscriptSpan(), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        if(aPiece.superscript) {
+        if(aSpanStyle.superscript) {
             finalString.setSpan(new SuperscriptSpan(), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        if(aPiece.strike) {
+        if(aSpanStyle.strike) {
             finalString.setSpan(new StrikethroughSpan(), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        if(aPiece.underline) {
+        if(aSpanStyle.underline) {
             finalString.setSpan(new UnderlineSpan(), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         // style
-        finalString.setSpan(new StyleSpan(aPiece.style), start, end,
+        finalString.setSpan(new StyleSpan(aSpanStyle.style), start, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // absolute text size
-        finalString.setSpan(new AbsoluteSizeSpan(aPiece.textSize), start, end,
+        finalString.setSpan(new AbsoluteSizeSpan(aSpanStyle.textSize), start, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // relative text size
-        finalString.setSpan(new RelativeSizeSpan(aPiece.textSizeRelative), start, end,
+        finalString.setSpan(new RelativeSizeSpan(aSpanStyle.textSizeRelative), start, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // text color
-        finalString.setSpan(new ForegroundColorSpan(aPiece.textColor), start, end,
+        finalString.setSpan(new ForegroundColorSpan(aSpanStyle.textColor), start, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // background color
-        if(aPiece.backgroundColor != -1) {
-            finalString.setSpan(new BackgroundColorSpan(aPiece.backgroundColor), start, end,
+        if(aSpanStyle.backgroundColor != -1) {
+            finalString.setSpan(new BackgroundColorSpan(aSpanStyle.backgroundColor), start, end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
@@ -212,7 +212,7 @@ public class BabushkaText extends TextView {
      * Resets the styling of this view and sets it's content to an empty String.
      */
     public void reset() {
-        mPieces = new ArrayList<>();
+        mSpanStyles = new ArrayList<>();
         setText("");
     }
 
@@ -220,21 +220,21 @@ public class BabushkaText extends TextView {
     * Change text color of all pieces of textview.
     */
     public void changeTextColor(int textColor) {
-        for (Piece mPiece : mPieces) {
-            mPiece.setTextColor(textColor);
+        for (SpanStyle mSpanStyle : mSpanStyles) {
+            mSpanStyle.setTextColor(textColor);
         }
         display();
     }
 
     /**
-     * A Piece represents a part of the text that you want to style. Say for example you want this
+     * A SpanStyle represents a part of the text that you want to style. Say for example you want this
      * BabushkaText to display "Hello World" such that "Hello" is displayed in Bold and "World" is
      * displayed in Italics. Since these have different styles, they are both separate Pieces.
      *
-     * You create a Piece by using it's {@link babushkatext.BabushkaText.Piece.Builder}
+     * You create a SpanStyle by using it's {@link SpanStyle.Builder}
      *
      */
-    public static class Piece {
+    public static class SpanStyle {
 
         private String text;
         private int textColor;
@@ -247,7 +247,7 @@ public class BabushkaText extends TextView {
         private final boolean strike;
         private final boolean subscript;
 
-        public Piece(Builder builder) {
+        public SpanStyle(Builder builder) {
             this.text = builder.text;
             this.textSize = builder.textSize;
             this.textColor = builder.textColor;
@@ -261,10 +261,10 @@ public class BabushkaText extends TextView {
         }
 
         /**
-         * Sets the text of this Piece. If you're creating a new Piece, you should do so using it's
-         * {@link babushkatext.BabushkaText.Piece.Builder}.
+         * Sets the text of this SpanStyle. If you're creating a new SpanStyle, you should do so using it's
+         * {@link SpanStyle.Builder}.
          *
-         * Use this method if you want to modify the text of an existing Piece that is already
+         * Use this method if you want to modify the text of an existing SpanStyle that is already
          * displayed. After doing so, you MUST call {@code display()} for the changes to show up.
          *
          * @param text the text to display
@@ -275,13 +275,13 @@ public class BabushkaText extends TextView {
 
 
         /**
-         * Sets the text color of this Piece. If you're creating a new Piece, you should do so using it's
-         * {@link babushkatext.BabushkaText.Piece.Builder}.
+         * Sets the text color of this SpanStyle. If you're creating a new SpanStyle, you should do so using it's
+         * {@link SpanStyle.Builder}.
          *
-         * Use this method if you want to change the text color of an existing Piece that is already
+         * Use this method if you want to change the text color of an existing SpanStyle that is already
          * displayed. After doing so, you MUST call {@code display()} for the changes to show up.
          *
-         * @param color of text (it is NOT android Color resources ID, use getResources().getColor(R.color.colorId) for it)
+         * @param textColor of text (it is NOT android Color resources ID, use getResources().getColor(R.color.colorId) for it)
          */
 		public void setTextColor(int textColor) {
         	this.textColor = textColor;
@@ -307,9 +307,9 @@ public class BabushkaText extends TextView {
             private boolean subscript = false;
 
             /**
-             * Creates a new Builder for this Piece.
+             * Creates a new Builder for this SpanStyle.
              *
-             * @param text the text of this Piece
+             * @param text the text of this SpanStyle
              */
             public Builder(String text) {
                 this.text = text;
@@ -360,7 +360,7 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Sets a style to this Piece.
+             * Sets a style to this SpanStyle.
              *
              * @param style see {@link android.graphics.Typeface}
              * @return a Builder
@@ -371,7 +371,7 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Underlines this Piece.
+             * Underlines this SpanStyle.
              *
              * @return a Builder
              */
@@ -381,7 +381,7 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Strikes this Piece.
+             * Strikes this SpanStyle.
              *
              * @return a Builder
              */
@@ -391,7 +391,7 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Sets this Piece as a superscript.
+             * Sets this SpanStyle as a superscript.
              *
              * @return a Builder
              */
@@ -401,7 +401,7 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Sets this Piece as a subscript.
+             * Sets this SpanStyle as a subscript.
              *
              * @return a Builder
              */
@@ -411,13 +411,13 @@ public class BabushkaText extends TextView {
             }
 
             /**
-             * Creates a {@link babushkatext.BabushkaText.Piece} with the customized
+             * Creates a {@link SpanStyle} with the customized
              * parameters.
              *
-             * @return a Piece
+             * @return a SpanStyle
              */
-            public Piece build() {
-                return new Piece(this);
+            public SpanStyle build() {
+                return new SpanStyle(this);
             }
         }
     }
